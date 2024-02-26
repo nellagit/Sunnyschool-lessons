@@ -1,0 +1,17 @@
+aws ec2 create-launch-template \
+  --launch-template-name My-launch-template \
+  --version-description "Version 1" \
+  --tag-specifications 'ResourceType=launch-template,Tags=[{Key=Name,Value=My-launch-template}]' \
+  --launch-template-data "{\"ImageId\":\"ami-0c7217cdde317cfec\",\"InstanceType\":\"t2.micro\",\"UserData\":\"$(base64 -w 0 nginx-install-script.sh)\",\"SecurityGroupIds\":[\"sg-09f2282a4041ea147\"]}" 
+  
+  aws autoscaling create-auto-scaling-group \
+  --auto-scaling-group-name My-ASG \
+  --launch-template "LaunchTemplateName=My-launch-template,Version=1" \
+  --min-size 1 \
+  --max-size 3 \
+  --desired-capacity 1 \
+  --availability-zones "us-east-1a" "us-east-1b"
+
+
+
+ 

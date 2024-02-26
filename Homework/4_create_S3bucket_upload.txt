@@ -1,0 +1,9 @@
+#Create an S3 Bucket
+aws s3api create-bucket --bucket nellabucket --region us-east-1
+
+#Enable Versioning on the Bucket
+aws s3api put-bucket-versioning --bucket nellabucket --versioning-configuration Status=Enabled
+
+
+#Upload a File to the Bucket
+aws s3 cp office-245240.jpg s3://nellabucket/

@@ -1,0 +1,35 @@
+#Create the Target Group
+aws elbv2 create-target-group \
+  --name My-target-group \
+  --protocol HTTP \
+  --port 80 \
+  --vpc-id vpc-00a76b27bf6c39d6f \
+  --health-check-protocol HTTP \
+  --health-check-interval-seconds 30 \
+  --health-check-timeout-seconds 5 \
+  --healthy-threshold-count 2 \
+  --unhealthy-threshold-count 2
+
+
+#Create the Application Load Balancer
+aws elbv2 create-load-balancer \
+  --name My-ALB \
+  --subnets subnet-0cad91741ebc9067b subnet-02193be633feb0ae5 \
+  --security-groups sg-09f2282a4041ea147 \
+  --scheme internet-facing
+
+
+  #Register Instances with the Target Group
+aws elbv2 register-targets \
+  --target-group-arn arn:aws:elasticloadbalancing:us-east-1:654654624956:targetgroup/My-target-group/1936561ea1d6e46a \
+  --targets Id=i-047d11754acdf5fc2
+
+
+  
+  #Configure ALB Listener
+aws elbv2 create-listener \
+  --load-balancer-arn arn:aws:elasticloadbalancing:us-east-1:654654624956:loadbalancer/app/My-ALB/1ad96744546f39fe \
+  --protocol HTTP \
+  --port 80 \
+  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-1:654654624956:targetgroup/My-target-group/1936561ea1d6e46a
+
