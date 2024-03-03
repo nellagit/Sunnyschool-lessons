@@ -1,0 +1,22 @@
+#Create a NAT gateway and associate it with an Elastic IP (EIP).
+    # Create Elastic IP (EIP)
+eip_allocation_id=$(aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text)
+
+    # Create NAT Gateway
+nat_gateway_id=$(aws ec2 create-nat-gateway --subnet-id subnet-08985e1fce817b51a --allocation-id $eip_allocation_id --query 'NatGateway.NatGatewayId' --output text)
+
+
+
+#Create a private subnet.
+aws ec2 create-subnet --vpc-id $vpc_id --cidr-block 10.0.2.0/24
+
+
+
+
+#Modify the private subnet's route table to route internet-bound traffic through the NAT gateway.
+
+# Retrieve the ID of the main route table associated with the VPC
+route_table_id=$(aws ec2 describe-route-tables --filters "Name=vpc-id,Values=$vpc_id" --query 'RouteTables[0].RouteTableId' --output text)
+
+# Replace the existing default route with the NAT Gateway
+aws ec2 replace-route --route-table-id $route_table_id --destination-cidr-block 0.0.0.0/0 --nat-gateway-id $nat_gateway_id

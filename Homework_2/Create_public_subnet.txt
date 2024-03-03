@@ -1,0 +1,29 @@
+#Create an Internet Gateway
+aws ec2 create-internet-gateway \
+  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=MyTest_IG}]'
+
+ 
+
+
+#Retrieve the ID of my VPC
+vpc_id=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=MyTest_Vpc" --query 'Vpcs[0].VpcId' --output text)
+
+# Retrieve the ID of my Internet Gateway
+igw_id=$(aws ec2 describe-internet-gateways --filters "Name=tag:Name,Values=MyTest_IG" --query 'InternetGateways[0].InternetGatewayId' --output text)
+
+
+
+# Attach Internet Gateway to VPC
+aws ec2 attach-internet-gateway --internet-gateway-id igw-0469328466b8d76f1 --vpc-id vpc-07c137de22837275e
+
+# Create a Subnet within the VPC
+aws ec2 create-subnet --vpc-id vpc-07c137de22837275e --cidr-block 10.0.1.0/24
+
+#Modify the Subnet's Route Table to Route Traffic to the Internet Gateway
+    #retrieve the ID of the main route table associated with the VPC
+aws ec2 describe-route-tables --filters Name=vpc-id,Values=vpc-07c137de22837275e Name=association.main,Values=true --query 'RouteTables[0].RouteTableId' --output text
+
+
+    # associate the internet gateway with the subnet's route table
+aws ec2 create-route --route-table-id rtb-0bed5600184aa7b37 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0469328466b8d76f1
+
