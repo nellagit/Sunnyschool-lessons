@@ -1,0 +1,27 @@
+# Create a file named lambda_function.py with the following code
+def lambda_handler(event, context):
+    return {
+        'statusCode': 200,
+        'body': 'Hello World!'
+    }
+
+# Then, zip the file
+zip lambda_function.zip lambda_function.py
+# or zip the file using 7-Zip in windows 
+7z a lambda_function.zip lambda_function.py
+
+# Create role configuration file named role.json
+
+#Create role
+aws iam create-role --role-name MY-lambda-role --assume-role-policy-document file://role.json
+
+#get the MY-lambda-roleArn
+aws iam list-roles --query 'Roles[?RoleName == `MY-lambda-role`].Arn'
+
+#create the Lambda function
+aws lambda create-function \
+--function-name MyLambdaFunction \
+--zip-file fileb://lambda_function.zip \
+--handler lambda_function.lambda_handler \
+--runtime python3.12 \
+--role arn:aws:iam::654654624956:role/MY-lambda-role

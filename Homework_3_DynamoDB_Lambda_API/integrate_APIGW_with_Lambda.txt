@@ -1,0 +1,50 @@
+#integrate API GW with Lambda
+#Get the Lambda function ARN
+aws lambda get-function --function-name MyLambdaFunction --query 'Configuration.FunctionArn' --output text
+
+#get the rest-api-id of my API Gateway REST API
+aws apigateway get-rest-apis --query "items[?name=='MyAPI-GW'].id" --output text
+
+#Call the get-resources command to get the root resource id
+aws apigateway get-resources --rest-api-id raf1v2qvg3 --region us-east-1
+
+#Create a resource in my API
+aws apigateway create-resource \
+    --rest-api-id raf1v2qvg3 \
+    --parent-id "5tvlxmc1zj" \
+    --path-part test
+
+aws apigateway put-method --rest-api-id raf1v2qvg3 \
+       --region us-east-1 \
+       --resource-id px84d5 \
+       --http-method GET \
+       --authorization-type "NONE" \
+       --request-parameters method.request.querystring.greeter=false
+
+aws apigateway put-integration \
+    --region us-east-1 \
+    --rest-api-id raf1v2qvg3 \
+    --resource-id px84d5 \
+    --http-method GET \
+    --type AWS_PROXY \
+    --integration-http-method POST \
+    --uri arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:654654624956:function:MyLambdaFunction/invocations
+  
+#Deploy API Gateway
+aws apigateway create-deployment \
+    --rest-api-id raf1v2qvg3 \
+    --stage-name dev
+
+
+
+
+
+
+
+
+
+
+    aws apigateway get-deployment \
+    --rest-api-id raf1v2qvg3 \
+    --deployment-id "slivez"
+
