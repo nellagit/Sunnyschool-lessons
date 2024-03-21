@@ -7,3 +7,6 @@ variable "stage_name" {
   description = "Name of the API Gateway stage"
   type        = string
 }
+
+variable "region" {}
+variable "accountId" {}
