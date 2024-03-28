@@ -26,11 +26,6 @@ resource "aws_iam_role" "iam_for_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-/* data "archive_file" "lambda" {
-  type        = "zip"
-  source_file = "${path.module}/modules/terraform-module-lambda-api/lambda_zip/lambda_handler.py"
-  output_path = "${path.module}/modules/terraform-module-lambda-api/lambda_zip"
-} */
 
 resource "aws_lambda_function" "my_lambda_function" {
   filename      = "${path.module}/lambda_zip/lambda_code.zip"
