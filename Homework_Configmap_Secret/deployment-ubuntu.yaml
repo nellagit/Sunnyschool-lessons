@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      #volumes:
+      #- name: secret-volume
+        #secret:
+          #secretName: mysecret
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        command: ["/bin/bash", "-c", "tail -f /dev/null"]
+        env:
+        - name: Name
+          valueFrom:
+            configMapKeyRef:
+              name: env-conf
+              key: Name
+        - name: LastName
+          valueFrom:
+            configMapKeyRef:
+              name: env-conf
+              key: LastName
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: password
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: token
+             
