@@ -1,0 +1,41 @@
+CONFIGMAP
+SECRET
+
+kubectl apply -f nginx-configmap.yaml
+kubectl get congigmaps nginx-conf
+kubectl describe configmap nginx-conf
+kubectl apply -f deployment-nginx.yaml
+kubectl get deployment
+kubectl get pod
+kubectl exec -ti nginx-deployment-6df49dcd5f-4v4wb bash   
+cd /etc/nginx/
+ls -lah
+readlink -f nginx.conf      #/etc/nginx/..2024_04_08_17_25_18.1918637516/nginx.conf
+more nginx.conf   
+
+kubectl rolluot restart deployment nginx-deployment
+
+kubectl apply -f env-configmap.yaml
+kubectl get configmap
+kubectl describe configmap env-conf
+kubectl apply -f deployment-ubuntu.yaml
+kubectl get deployment
+kubectl get pod
+kubectl exec -ti ubuntu-deployment-7b7944547b-9gc9v bash
+env | grep -i name
+
+secret
+echo "StrongPassword" |base64      
+U3Ryb25nUGFzc3dvcmQNCg==
+echo "ThisIsMyToken" |base64
+VGhpc0lzTXlUb2tlbg0K
+
+kubectl apply -f secrets.yaml
+kubectl get secrets
+kubectl describe secrets mysecret
+kubectl edit secrets mysecret
+echo "U3Ryb25nUGFzc3dvcmQNCg==" |base64 -d	
+kubectl apply -f deployment-ubuntu.yaml
+kubectl get pods
+kubectl exec -ti ubuntu-deployment-6fc96ff687-ppm8n bash
+env |grep -i -E "password|token|name"
